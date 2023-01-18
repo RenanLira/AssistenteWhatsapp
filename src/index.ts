@@ -25,6 +25,27 @@ async function connectToWhatsApp () {
     const sock = makeWASocket({
         auth: state ,
         printQRInTerminal: true,
+        patchMessageBeforeSending: (message) => {
+            const requiresPatch = !!(
+              message.buttonsMessage
+          	  || message.templateMessage
+          		|| message.listMessage
+            );
+            if (requiresPatch) {
+                message = {
+                    viewOnceMessage: {
+                        message: {
+                            messageContextInfo: {
+                                deviceListMetadataVersion: 2,
+                                deviceListMetadata: {},
+                            },
+                            ...message,
+                        },
+                    },
+                };
+            }
+            return message;
+},
 
 
     })
@@ -37,6 +58,7 @@ async function connectToWhatsApp () {
 
         if (!message.key.fromMe) {
             const id = message.key.remoteJid!
+            console.log(id)
 
             const templateButtonMsg: proto.IHydratedTemplateButton[] = [
                 {index: 1, urlButton: {displayText: 'Meu gitHub', url: 'https://github.com/RenanLira'}}
@@ -45,7 +67,8 @@ async function connectToWhatsApp () {
             const templateMsg: AnyMessageContent = {
                 text: 'Olá, está é uma mensagem automatica',
                 footer: `${dayjs().format('L LT')}`,
-                templateButtons: templateButtonMsg
+                templateButtons: templateButtonMsg,
+                viewOnce: true
             }
                 
 
@@ -68,7 +91,6 @@ async function connectToWhatsApp () {
             }
         } else if(connection === 'open') {
             console.log('opened connection')
-            await sock.sendPresenceUpdate('unavailable')
         }
     })
 
