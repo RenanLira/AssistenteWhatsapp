@@ -1,4 +1,4 @@
-import makeWASocket, { DisconnectReason, BufferJSON, useMultiFileAuthState, Browsers, makeInMemoryStore, aggregateMessageKeysNotFromMe } from '@adiwajshing/baileys'
+import makeWASocket, { DisconnectReason, BufferJSON, useMultiFileAuthState, Browsers, makeInMemoryStore, aggregateMessageKeysNotFromMe, proto, AnyMessageContent } from '@adiwajshing/baileys'
 import { Boom } from '@hapi/boom'
 import * as fs from 'fs'
 
@@ -39,7 +39,20 @@ async function connectToWhatsApp () {
 
         if (!message.key.fromMe) {
             const id = arg.messages[0].key.remoteJid!
-            await sock.sendMessage(id, {text: 'Oi'})
+            const templateButtonMsg: proto.IHydratedTemplateButton[] = [
+                {index: 1, urlButton: {displayText: 'Meu gitHub', url: 'https://github.com/RenanLira'}}
+            ]
+
+            const templateMsg: AnyMessageContent = {
+                text: 'Olá, está é uma mensagem automatica',
+                footer: `${dayjs().format('L LT')}`,
+                templateButtons: templateButtonMsg
+            }
+                
+
+            await sock.sendMessage(id, templateMsg)
+
+            
         }
 
 
@@ -66,7 +79,11 @@ async function connectToWhatsApp () {
 
         await sock.rejectCall(arg[0].id, arg[0].from)
 
-        await sock.sendMessage(arg[0].from, {text: "Olá, não posso atender agora"})
+        if (arg[0].status == 'reject') {
+
+            await sock.sendMessage(arg[0].from, {text: "Olá, não posso atender agora"})
+        }
+
     })
 
 
