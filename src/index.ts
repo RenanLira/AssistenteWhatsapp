@@ -32,13 +32,12 @@ async function connectToWhatsApp () {
     store.bind(sock.ev)
 
     sock.ev.on('messages.upsert', async (arg) => {
-        console.log(arg.messages[0])
         
         const message = arg.messages[0]
-        console.log(dayjs())
 
         if (!message.key.fromMe) {
-            const id = arg.messages[0].key.remoteJid!
+            const id = message.key.remoteJid!
+
             const templateButtonMsg: proto.IHydratedTemplateButton[] = [
                 {index: 1, urlButton: {displayText: 'Meu gitHub', url: 'https://github.com/RenanLira'}}
             ]
