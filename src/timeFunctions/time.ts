@@ -58,18 +58,18 @@ export class TimeCalculate {
 
         console.log(day, this.horariosDisponiveis[2], agora)
 
-        if (this.horariosDisponiveis[day].start > agora && this.horariosDisponiveis[day].end < agora ){
+        if (this.horariosDisponiveis[day].start >= agora || this.horariosDisponiveis[day].end <= agora ){
             
-            return 'disponivel'
+            return 'indisponivel'
             
         }
         
-        if (this.horariosDisponiveis[day].pause.filter((v, i) => agora < v[0] && agora > v[1])) {
+        if (this.horariosDisponiveis[day].pause.find((v, i) => agora > v[0] && agora < v[1])) {
 
-            return 'disponivel'
+            return 'indisponivel'
         }
 
-        return 'indisponivel'
+        return 'disponivel'
     }
 
     getHoursAndMinutes = () => {
