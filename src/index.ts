@@ -4,11 +4,14 @@ import * as fs from 'fs'
 
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+import timezone from 'dayjs/plugin/timezone'
 import 'dayjs/locale/pt-br'
 
 
 dayjs.locale('pt-br')
 dayjs.extend(LocalizedFormat)
+dayjs.extend(timezone)
+dayjs.tz.setDefault('America/Sao_Paulo')
 
 async function connectToWhatsApp () {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
@@ -66,7 +69,7 @@ async function connectToWhatsApp () {
 
             const templateMsg: AnyMessageContent = {
                 text: 'Olá, está é uma mensagem automatica',
-                footer: `${dayjs().format('L LT')}`,
+                footer: `${dayjs().hour()}`,
                 templateButtons: templateButtonMsg,
                 viewOnce: true
             }
