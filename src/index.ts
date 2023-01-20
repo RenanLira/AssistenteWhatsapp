@@ -4,14 +4,15 @@ import * as fs from 'fs'
 
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
-import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import 'dayjs/locale/pt-br'
+import { TimeCalculate } from './timeFunctions/time'
 
 
 dayjs.locale('pt-br')
 dayjs.extend(LocalizedFormat)
-dayjs.extend(timezone)
-dayjs.tz.setDefault('America/Sao_Paulo')
+dayjs.extend(utc)
+
 
 async function connectToWhatsApp () {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
@@ -58,6 +59,7 @@ async function connectToWhatsApp () {
     sock.ev.on('messages.upsert', async (arg) => {
         
         const message = arg.messages[0]
+        const horario = new TimeCalculate()
 
         if (!message.key.fromMe) {
             const id = message.key.remoteJid!
@@ -68,8 +70,8 @@ async function connectToWhatsApp () {
             ]
 
             const templateMsg: AnyMessageContent = {
-                text: 'Olá, está é uma mensagem automatica',
-                footer: `${dayjs().hour()}`,
+                text: horario.VerificarDisponibilidade(),
+                footer: `${dayjs().utcOffset(-3)}`,
                 templateButtons: templateButtonMsg,
                 viewOnce: true
             }
@@ -93,20 +95,26 @@ async function connectToWhatsApp () {
                 connectToWhatsApp()
             }
         } else if(connection === 'open') {
+            await sock.sendPresenceUpdate('unavailable')
             console.log('opened connection')
         }
     })
 
     sock.ev.on('creds.update', saveCreds)
 
+
     sock.ev.on('call', async (arg) => {
 
-        await sock.rejectCall(arg[0].id, arg[0].from)
+        if ( arg[0].status == 'ringing') {
+            await sock.rejectCall(arg[0].id, arg[0].from)
+
+        }
 
         if (arg[0].status == 'reject') {
 
             await sock.sendMessage(arg[0].from, {text: "Olá, não posso atender agora"})
         }
+
 
     })
 
