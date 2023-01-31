@@ -1,30 +1,12 @@
 import dayjs from 'dayjs'
-import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import utc from 'dayjs/plugin/utc'
-import 'dayjs/locale/pt-br'
+dayjs.extend(utc)
 
-
-// const horario = {
-//     default: {
-//         start: 9,
-//         end: 18,
-//         pause: [[12, 30], [13, 30]]
-//     },
-//     6: {
-//         start: 9,
-//         end: 17,
-//         pause: [[12,0], [13,0]]
-//     },
-//     0: {
-//         undefined
-//     }
-
-// }
 
 
 export class TimeCalculate {
 
-    private time = dayjs().utcOffset(-3)
+    private time;
     private default = {
         start: 9,
         end: 18,
@@ -49,33 +31,47 @@ export class TimeCalculate {
         },
     
     }
+    constructor(timestamp: number) {
+        this.time = dayjs(timestamp * 1000).utcOffset(-3)
+    }
 
 
-    VerificarDisponibilidade = () => {
+    disponibilidade = () => {
         const agora = this.getHoursAndMinutes()
 
         const day = this.getDayWeek()
 
-        console.log(day, this.horariosDisponiveis[2], agora)
 
         if (this.horariosDisponiveis[day].start >= agora || this.horariosDisponiveis[day].end <= agora ){
             
-            return 'indisponivel'
+            return false
             
         }
         
         if (this.horariosDisponiveis[day].pause.find((v, i) => agora > v[0] && agora < v[1])) {
 
-            return 'indisponivel'
+            return false
         }
 
-        return 'disponivel'
+        return true
     }
 
-    getHoursAndMinutes = () => {
-        
-        let hour = this.time.hour()
-        let minutes = this.time.minute() / 100
+    diferencaTimeResposta = (timepassado: number ) => {
+
+        console.log(dayjs(timepassado).utcOffset(-3))
+
+        const oldTime = this.getHoursAndMinutes(dayjs(timepassado * 1000).utcOffset(-3))
+
+
+
+        return Number((this.getHoursAndMinutes() - oldTime).toFixed(2))
+
+
+    }
+
+    getHoursAndMinutes = (oldtime?: dayjs.Dayjs) => {
+        let hour = oldtime?.hour() || this.time.hour()
+        let minutes = oldtime?.minute()! / 100 || this.time.minute() / 100
 
 
         return hour + minutes
