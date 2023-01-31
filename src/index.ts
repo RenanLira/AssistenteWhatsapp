@@ -65,8 +65,9 @@ async function connectToWhatsApp (auth: AuthHandle, store: StoreHandle) {
         }
 
         const diferenca = time.diferencaTimeResposta(oldtimestamp)
-        
+
         console.log(diferenca)
+        
 
         if (diferenca >= 0.30) {
             await sendMessage.sendMessageClientUnavailable(arg)
