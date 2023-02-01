@@ -66,14 +66,16 @@ async function connectToWhatsApp (auth: AuthHandle, store: StoreHandle) {
 
         const diferenca = time.diferencaTimeResposta(oldtimestamp)
 
-        console.log(diferenca)
         
-
-        if (diferenca >= 0.30) {
-            await sendMessage.sendMessageClientUnavailable(arg)
+        if (!time.disponibilidade()) {
+            if (diferenca < 0 || diferenca >= 1) {
+                await sendMessage.sendMessageClientUnavailable(arg)
+                return await sock.sendPresenceUpdate('available', arg.messages[0].key.remoteJid!)
+            }
 
         }
 
+        await sock.sendPresenceUpdate('unavailable', arg.messages[0].key.remoteJid!)
 
 
     })

@@ -23,6 +23,7 @@ export class SendMessages {
 
         let id = arg.messages[0].key.remoteJid!
         if (this.criteriosOk(arg)) {
+            await this.sock.readMessages([arg.messages[0].key])
             await this.sock.sendMessage(id, {text: 'Olá não estou disponivel no momento, respondo assim que possivel'})
 
         }
@@ -42,7 +43,7 @@ export class SendMessages {
 
         // if (!arg.messages[0].pushName?.search('Renan')) return false
 
-        if (!time.disponibilidade()) return false
+        if (time.disponibilidade()) return false
 
         return true
 

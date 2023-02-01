@@ -59,12 +59,11 @@ export class TimeCalculate {
     diferencaTimeResposta = (timepassado: number ) => {
 
 
-        const oldTime = this.getHoursAndMinutes(dayjs(timepassado * 1000).utcOffset(-3))
+        const diferenca = dayjs(this.time).diff(timepassado*1000, "minute")
 
-        console.log(this.getHoursAndMinutes())
-        console.log(oldTime)
+        
 
-        return Number((this.getHoursAndMinutes() - oldTime).toFixed(2))
+        return diferenca
 
 
     }
