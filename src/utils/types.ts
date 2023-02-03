@@ -13,5 +13,3 @@ export interface ConfigTemplateMessages {
     text: string
 
 }
-
-export type tm = () => object
