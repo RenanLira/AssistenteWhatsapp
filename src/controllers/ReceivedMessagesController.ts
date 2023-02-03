@@ -39,8 +39,8 @@ export class ReceivedMessagesController {
         const msgTarget = await this.storeQuerys.getMsgTargetById(id, templatesMessages().unavaliableMessage)
         const resultCompare = time.compareTimeBetweenMsgs(handleTimestamp(msgTarget?.messageTimestamp!))
 
-        
         const sendmsg = new SendMessages(id)
+
         if (!time.disponibilidade() && resultCompare) {
             await sendmsg.sendClientMessageUnavaliable()
             await sendmsg.sendSeenMsg([this.msgReceivedInfo.messages[0].key])
