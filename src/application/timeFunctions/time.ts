@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import { TimeIntervalBetweenEachMessage } from '../../configAssistent';
 dayjs.extend(utc)
 
 
@@ -32,7 +33,7 @@ export class TimeCalculate {
     
     }
     constructor(timestamp: number) {
-        this.time = dayjs(timestamp * 1000).utcOffset(-3)
+        this.time = dayjs(timestamp).utcOffset(-3)
     }
 
 
@@ -41,6 +42,7 @@ export class TimeCalculate {
 
         const day = this.getDayWeek()
 
+        if (this.horariosDisponiveis[day] === null) return false
 
         if (this.horariosDisponiveis[day].start >= agora || this.horariosDisponiveis[day].end <= agora ){
             
@@ -56,10 +58,10 @@ export class TimeCalculate {
         return true
     }
 
-    diferencaTimeResposta = (timepassado: number ) => {
+    private diferencaTimeResposta = (timepassado: number ) => {
 
 
-        const diferenca = dayjs(this.time).diff(timepassado*1000, "minute")
+        const diferenca = dayjs(this.time).diff(timepassado, "minute")
 
         
 
@@ -84,6 +86,18 @@ export class TimeCalculate {
 
 
     
+    }
+
+    compareTimeBetweenMsgs = (timestampMsgTarget: number) : boolean => {
+
+        const diferenca = this.diferencaTimeResposta(timestampMsgTarget)
+
+
+        if (diferenca < 0 || diferenca > TimeIntervalBetweenEachMessage) {
+            return true
+        }
+        
+        return false
     }
 
 }
