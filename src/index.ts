@@ -58,38 +58,6 @@ async function connectToWhatsApp (auth: AuthHandle, store: StoreHandle) {
         const msgController = new ReceivedMessagesController(arg, storeFunction)
         await msgController.execute()
 
-        // const msgs =  await store.messages.all(arg.messages[0].key.remoteJid!)
-        // const msgAlvo = msgs?.sort((a,b) => b.id - a.id).find((v, i) => {
-        //    return v.message?.extendedTextMessage?.text == 'Olá não estou disponivel no momento, respondo assim que possivel'
-        // })
-
-        // const sendMessage = new SendMessages(sock,)
-        // if (!msgAlvo) {
-
-        //     await sendMessage.sendMessageClientUnavailable(arg)
-
-            
-        // }
-        // const time = new TimeCalculate(Number(arg.messages[0].messageTimestamp))
-
-        // let oldtimestamp = 0
-        // if (typeof msgAlvo?.messageTimestamp === 'object') {
-        //     oldtimestamp = msgAlvo?.messageTimestamp?.low!
-        // }
-
-        // const diferenca = time.diferencaTimeResposta(oldtimestamp)
-
-        
-        // if (!time.disponibilidade()) {
-        //     if (diferenca < 0 || diferenca >= 1) {
-        //         await sendMessage.sendMessageClientUnavailable(arg)
-        //         return await sock.sendPresenceUpdate('available', arg.messages[0].key.remoteJid!)
-        //     }
-
-        // }
-
-        // await sock.sendPresenceUpdate('unavailable', arg.messages[0].key.remoteJid!)
-
 
     })
 
